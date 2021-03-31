@@ -32,9 +32,9 @@ module.exports = (app) => {
   app.post("/images", uploadImg.uploadImg, images.create);
   app.get("/images/gallery/", images.getAll);
   app.get("/images/gallery/:galleryNama", images.getByGallery);
-  app.delete("/images/gallery/:imagesNama/:imagesId", images.delete);
+  app.delete("/images/gallery/:imagesId/:filename", images.delete);
   app.put(
-    "/images/gallery/:imagesNama/:imagesId",
+    "/images/gallery/:imagesId/:filename",
     uploadImg.uploadImg,
     images.update
   );

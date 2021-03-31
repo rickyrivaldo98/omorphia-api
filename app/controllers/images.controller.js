@@ -16,6 +16,7 @@ exports.create = (req, res) => {
   });
 
   Images.create(images, (err, data) => {
+    console.log(req.file);
     if (err)
       res.status(500).send({
         message: err.message || "Ada error ketika memasukkan images",
@@ -29,7 +30,7 @@ exports.create = (req, res) => {
             // .toFormat("png")
             // .resize(1080)
             .png({ progressive: true, compressionLevel: 5 })
-            .jpeg({progressive: true, quality: 50})
+            .jpeg({ progressive: true, quality: 50 })
             .toFile("./" + req.file.path, (err, info) => {
               console.log("oke");
             });
@@ -86,7 +87,7 @@ exports.getByImagesId = (req, res) => {
 };
 
 exports.delete = function (req, res) {
-  Images.deleteFile(req.params.imagesNama, function (err, data) {
+  Images.deleteFile(req.params.filename, function (err, data) {
     if (err) res.send(err);
     // res.json({ message: "Bisa dong" });
   });
@@ -125,7 +126,7 @@ exports.update = function (req, res) {
         "ANJENG KENAPA KESINI TERUS ||| Please provide all required field",
     });
   } else {
-    Images.deleteFile(req.params.imagesNama, function (err, data) {
+    Images.deleteFile(req.params.filename, function (err, data) {
       if (err) res.send(err);
       // res.json({ message: "Bisa dong" });
     });

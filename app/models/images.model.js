@@ -99,21 +99,13 @@ Images.deleteByGallery = function (imagesId, result) {
   );
 };
 
-Images.deleteFile = (imagesNama, result) => {
+Images.deleteFile = (filename, result) => {
   const path = "./app/uploads/";
   const fs = require("fs");
 
-  fs.unlink(path + imagesNama + ".jpg", (err) => {
+  fs.unlink(path + filename, (err) => {
     if (err) {
-      fs.unlink(path + imagesNama + ".jpeg", (err) => {
-        if (err) {
-          fs.unlink(path + imagesNama + ".png", (err) => {
-            if (err) {
-              console.log("failed to delete local image:" + err);
-            }
-          });
-        }
-      });
+      console.log("failed to delete local image:" + err);
     } else {
       console.log("successfully deleted local image");
     }
