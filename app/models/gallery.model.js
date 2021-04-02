@@ -23,15 +23,24 @@ Gallery.create = (newGallery, result) => {
 };
 
 Gallery.getAll = (result) => {
-  sql.query("SELECT * FROM gallery g JOIN category c ON g.id_category = c.id_category", (err, res) => {
-    if (err) {
-      console.log("error:", err);
-      result(err, null);
-      return;
+  sql.query(
+    "SELECT * FROM gallery g JOIN category c ON g.id_category = c.id_category",
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
     }
-    console.log("galeri yang terambil:", res);
-    result(null, res);
-  });
+  );
 };
 
 Gallery.getByCategory = (categoryNama, result) => {
@@ -77,10 +86,17 @@ Gallery.getByGalleryId = function (galleryId, result) {
     function (err, res) {
       if (err) {
         console.log("error: ", err);
-        result(null, err);
-      } else {
-        result(null, res);
+        result(err, null);
+        return;
       }
+
+      if (res.length) {
+        console.log("ditemukan: ", res);
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "no_data" }, null);
     }
   );
 };

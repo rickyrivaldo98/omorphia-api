@@ -21,12 +21,18 @@ Contact.create = (newContact, result) => {
 Contact.getAll = (result) => {
   sql.query("SELECT * FROM contact", (err, res) => {
     if (err) {
-      console.log("error:", err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
-    console.log("contact yang terambil:", res);
-    result(null, res);
+
+    if (res.length) {
+      console.log("ditemukan: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({ kind: "no_data" }, null);
   });
 };
 
@@ -36,7 +42,7 @@ Contact.delete = function (contactId, result) {
     [contactId],
     function (err, res) {
       if (err) {
-        console.log ("error: ", err);
+        console.log("error: ", err);
         result(null, err);
       } else {
         result(null, res);

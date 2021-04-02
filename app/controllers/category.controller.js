@@ -22,11 +22,18 @@ exports.create = (req, res) => {
 
 exports.getAll = (req, res) => {
   Category.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Ada error ketika memanggil category",
-      });
-    else res.send(data);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any category.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil category",
+        });
+      }
+    } else res.send(data);
   });
 };
 
@@ -36,17 +43,16 @@ exports.getByCategoryId = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Not found Category with id ${req.params.categoryId}.`,
+          empty: true,
         });
       } else {
         res.status(500).send({
-          message:
-            "Error retrieving Category with id " + req.params.categoryId,
+          message: "Error retrieving Category with id " + req.params.categoryId,
         });
       }
     } else res.send(data);
   });
 };
-
 
 exports.delete = function (req, res) {
   Category.delete(req.params.categoryId, function (err, data) {
@@ -57,21 +63,17 @@ exports.delete = function (req, res) {
 
 exports.update = function (req, res) {
   const category = new Category({
-    category_nama: req.body.category_nama
+    category_nama: req.body.category_nama,
   });
-  
+
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     res
       .status(400)
       .send({ error: true, message: "Please provide all required field" });
   } else {
-    Category.update(
-      req.params.categoryId,
-      category,
-      function (err, category) {
-        if (err) res.send(err);
-        res.json({ error: false, message: "Category successfully updated"});
-      }
-    );
+    Category.update(req.params.categoryId, category, function (err, category) {
+      if (err) res.send(err);
+      res.json({ error: false, message: "Category successfully updated" });
+    });
   }
 };

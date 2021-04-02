@@ -51,11 +51,18 @@ exports.create = (req, res) => {
 
 exports.getAll = (req, res) => {
   User.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Ada error ketika memanggil user",
-      });
-    else res.send(data);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any user.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil user",
+        });
+      }
+    } else res.send(data);
   });
 };
 
@@ -65,6 +72,7 @@ exports.getByUser = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Tidak ditemukan ${req.params.userNama}`,
+          empty: true,
         });
       } else {
         res.status(500).send({
@@ -108,7 +116,7 @@ exports.signin = function (req, res) {
                 // expiresIn: 60, // 1 minutes
               }
             );
-            res.cookie("token", token, { maxAge: 3600 * 1000 })
+            res.cookie("token", token, { maxAge: 3600 * 1000 });
             // res.header("auth-token", token).json({
             //   error: null,
             //   data: { token },

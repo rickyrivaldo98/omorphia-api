@@ -24,11 +24,18 @@ exports.create = (req, res) => {
 
 exports.getAll = (req, res) => {
   Contact.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Ada error ketika memanggil contact",
-      });
-    else res.send(data);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any contact.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil contact",
+        });
+      }
+    } else res.send(data);
   });
 };
 
@@ -45,19 +52,15 @@ exports.update = function (req, res) {
     name: req.body.name,
     message: req.body.message,
   });
-  
+
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     res
       .status(400)
       .send({ error: true, message: "Please provide all required field" });
   } else {
-    Contact.update(
-      req.params.contactId,
-      contact,
-      function (err, contact) {
-        if (err) res.send(err);
-        res.json({ error: false, message: "Contact successfully updated"});
-      }
-    );
+    Contact.update(req.params.contactId, contact, function (err, contact) {
+      if (err) res.send(err);
+      res.json({ error: false, message: "Contact successfully updated" });
+    });
   }
 };

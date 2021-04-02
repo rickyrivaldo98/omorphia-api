@@ -2,7 +2,7 @@
   "name": "omorphia-api",
   "version": "1.0.0",
   "description": "Restful API with node.js, Express and MySQL",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon my_file.js",
     "node": "node server.js"

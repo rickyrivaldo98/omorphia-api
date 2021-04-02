@@ -24,11 +24,18 @@ exports.create = (req, res) => {
 
 exports.getAll = (req, res) => {
   Gallery.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Ada error ketika memanggil gallery",
-      });
-    else res.send(data);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any gallery.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil gallery",
+        });
+      }
+    } else res.send(data);
   });
 };
 
@@ -38,6 +45,7 @@ exports.getByCategory = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Not found Category with id ${req.params.categoryNama}.`,
+          empty: true,
         });
       } else {
         res.status(500).send({
@@ -55,11 +63,11 @@ exports.getByGalleryId = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Not found Gallery with id ${req.params.galleryId}.`,
+          empty: true,
         });
       } else {
         res.status(500).send({
-          message:
-            "Error retrieving Gallery with id " + req.params.galleryId,
+          message: "Error retrieving Gallery with id " + req.params.galleryId,
         });
       }
     } else res.send(data);

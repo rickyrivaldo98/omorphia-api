@@ -23,12 +23,18 @@ User.create = (newUser, result) => {
 User.getAll = (result) => {
   sql.query("SELECT * FROM user WHERE id_user = 99", (err, res) => {
     if (err) {
-      console.log("error:", err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
-    // console.log("user yang terambil:", res);
-    result(null, res);
+
+    if (res.length) {
+      console.log("ditemukan: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({ kind: "no_data" }, null);
   });
 };
 

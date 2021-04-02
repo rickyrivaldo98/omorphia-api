@@ -46,11 +46,18 @@ exports.create = (req, res) => {
 
 exports.getAll = (req, res) => {
   Images.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || "Ada error ketika memanggil gallery",
-      });
-    else res.send(data);
+    if (err) {
+      if (err.kind === "no_data") {
+        res.status(404).send({
+          message: `Not found any images.`,
+          empty: true,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ambil images",
+        });
+      }
+    } else res.send(data);
   });
 };
 
@@ -60,6 +67,7 @@ exports.getByGallery = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Not found Images with id ${req.params.galleryNama}.`,
+          empty: true,
         });
       } else {
         res.status(500).send({
@@ -76,6 +84,7 @@ exports.getByImagesId = (req, res) => {
       if (err.kind === "no_data") {
         res.status(404).send({
           message: `Not found Images with id ${req.params.imagesId}.`,
+          empty: true,
         });
       } else {
         res.status(500).send({

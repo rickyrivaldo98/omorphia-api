@@ -22,12 +22,18 @@ Category.create = (newCategory, result) => {
 Category.getAll = (result) => {
   sql.query("SELECT * FROM category", (err, res) => {
     if (err) {
-      console.log("error:", err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
-    console.log("category yang terambil:", res);
-    result(null, res);
+
+    if (res.length) {
+      console.log("ditemukan: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({ kind: "no_data" }, null);
   });
 };
 
@@ -37,7 +43,7 @@ Category.delete = function (categoryId, result) {
     [categoryId],
     function (err, res) {
       if (err) {
-        console.log ("error: ", err);
+        console.log("error: ", err);
         result(null, err);
       } else {
         result(null, res);
