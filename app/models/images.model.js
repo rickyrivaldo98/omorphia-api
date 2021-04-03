@@ -23,7 +23,7 @@ Images.create = (newImages, result) => {
 
 Images.getAll = (result) => {
   sql.query(
-    `SELECT * FROM images JOIN gallery ON gallery.id_gallery = images.id_gallery`,
+    `SELECT * FROM images JOIN gallery ON gallery.id_gallery = images.id_gallery JOIN category ON gallery.id_category=category.id_category`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);
