@@ -122,26 +122,55 @@ exports.delete = function (req, res) {
 // };
 
 exports.update = function (req, res) {
-  const images = new Images({
-    id_gallery: req.body.id_gallery,
-    images_nama: req.body.images_nama,
-    file: req.file.filename,
-  });
+  if (req.file) {
+    const images = new Images({
+      id_gallery: req.body.id_gallery,
+      images_nama: req.body.images_nama,
+      file: req.file.filename,
+    });
 
-  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-    res.status(400).send({
-      error: true,
-      message:
-        "ANJENG KENAPA KESINI TERUS ||| Please provide all required field",
-    });
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+      res.status(400).send({
+        error: true,
+        message:
+          "ANJENG KENAPA KESINI TERUS ||| Please provide all required field",
+      });
+    } else {
+      Images.deleteFile(req.params.filename, function (err, data) {
+        if (err) res.send(err);
+        // res.json({ message: "Bisa dong" });
+      });
+      Images.updateByGallery(
+        req.params.imagesId,
+        images,
+        function (err, images) {
+          if (err) res.send(err);
+          res.json({ error: false, message: "Images successfully updated" });
+        }
+      );
+    }
   } else {
-    Images.deleteFile(req.params.filename, function (err, data) {
-      if (err) res.send(err);
-      // res.json({ message: "Bisa dong" });
+    const images = new Images({
+      id_gallery: req.body.id_gallery,
+      images_nama: req.body.images_nama,
+      file: req.body.file,
     });
-    Images.updateByGallery(req.params.imagesId, images, function (err, images) {
-      if (err) res.send(err);
-      res.json({ error: false, message: "Images successfully updated" });
-    });
+
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+      res.status(400).send({
+        error: true,
+        message:
+          "ANJENG KENAPA KESINI TERUS ||| Please provide all required field",
+      });
+    } else {
+      Images.updateByGallery(
+        req.params.imagesId,
+        images,
+        function (err, images) {
+          if (err) res.send(err);
+          res.json({ error: false, message: "Images successfully updated" });
+        }
+      );
+    }
   }
 };

@@ -34,7 +34,7 @@ module.exports = (app) => {
   app.get("/images/gallery/:galleryNama", images.getByGallery);
   app.delete("/images/gallery/:imagesId/:filename", images.delete);
   app.put(
-    "/images/gallery/:imagesId/:filename",
+    "/images/gallery/:imagesId/:filename?",
     uploadImg.uploadImg,
     images.update
   );
